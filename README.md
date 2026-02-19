@@ -1,143 +1,40 @@
-## 1. System Architecture
+# AutoRaid Android App
 
-```mermaid
-graph LR
-    subgraph Users
-        C[Customer App]
-        P[Professional App]
-        A[Admin Panel]
-    end
+AutoRaid is a starter Android app for booking auto-rickshaw rides with a user experience inspired by apps like Rapido.
 
-    subgraph Core_System
-        B[Backend API]
-        D[(Database)]
-    end
+## What is included
 
-    PG[Payment Gateway]
-    N[Notification Service]
+- Jetpack Compose UI with bottom navigation.
+- Home screen with promotions and popular routes.
+- Book Ride screen with pickup/drop inputs and ride option selection.
+- Ride Status screen with captain details, OTP, and route summary.
+- Profile screen with rider details and wallet snapshot.
+- Mock repository for ride options and active booking.
 
-    C --> B
-    P --> B
-    A --> B
+## Tech stack
 
-    B --> D
-    B --> PG
-    B --> N
-```
+- Kotlin
+- Jetpack Compose (Material 3)
+- Navigation Compose
+- Android Gradle Plugin + Kotlin DSL
 
-----
+## Project structure
 
-## 2. Booking Workflow
+- `app/src/main/java/com/yesman/autoride/ui` - App shell and navigation.
+- `app/src/main/java/com/yesman/autoride/ui/screens` - Individual screens.
+- `app/src/main/java/com/yesman/autoride/data` - Mock data repository.
+- `app/src/main/java/com/yesman/autoride/model` - Data models.
 
-```mermaid
-sequenceDiagram
-    autonumber
-    participant C as Customer
-    participant S as System
-    participant P as Professional
-    participant PG as Payment Gateway
+## Run locally
 
-    C->>S: Login / Register
-    C->>S: Browse & Select Service
-    C->>S: Choose Slot & Location
-    S->>P: Booking Request
-    P->>S: Accept Booking
-    S->>C: Booking Confirmation
-    P->>C: Service Execution
-    C->>PG: Payment
-    PG->>S: Payment Success
-    S->>C: Rating Request
-    
-```
-<div style="page-break-after: always;"></div>
+1. Open this folder in Android Studio (latest stable).
+2. Let Gradle sync.
+3. Run on an Android emulator/device (minSdk 24).
 
----
+## Next steps to make it production-ready
 
-## 3. Professional Service Execution Flow
-
-```mermaid
-stateDiagram-v2
-    [*] --> Available
-    Available --> Assigned : Booking Assigned
-    Assigned --> OnTheWay
-    OnTheWay --> Arrived
-    Arrived --> ServiceStarted
-    ServiceStarted --> ServiceCompleted
-    ServiceCompleted --> PaymentProcessed
-    PaymentProcessed --> Available
-
-```
-
----
-
-
-## 4. Admin Operations Flow
-
-```mermaid
-graph TD
-    A[Admin Login]
-    B[User Management]
-    C[Professional Management]
-    D[Service & Pricing Management]
-    E[Booking Monitoring]
-    F[Finance & Reports]
-    G[Support & Disputes]
-
-    A --> B
-    B --> C
-    C --> D
-    D --> E
-    E --> F
-    F --> G
-    G --> A
-```
-
----
-
-## 5. Database ER Diagram
-
-```mermaid
-erDiagram
-    USERS ||--o{ BOOKINGS : places
-    PROFESSIONALS ||--o{ BOOKINGS : assigned_to
-    SERVICES ||--o{ BOOKINGS : includes
-    BOOKINGS ||--|| PAYMENTS : has
-    BOOKINGS ||--o{ REVIEWS : receives
-
-    USERS {
-        int user_id
-        string name
-        string email
-    }
-
-    PROFESSIONALS {
-        int professional_id
-        string name
-        string skills
-        float rating
-    }
-
-    SERVICES {
-        int service_id
-        string service_name
-        float price
-    }
-
-    BOOKINGS {
-        int booking_id
-        datetime schedule
-        string status
-    }
-
-    PAYMENTS {
-        int payment_id
-        float amount
-        string payment_status
-    }
-
-    REVIEWS {
-        int review_id
-        int rating
-        string comment
-    }
-```
+- Integrate Google Maps SDK for live pickup/drop map rendering.
+- Replace mock repository with backend APIs and authentication.
+- Add real-time location and ride tracking using sockets.
+- Add payments, SOS features, and notification handling.
+- Add unit/UI tests and CI build pipeline.
